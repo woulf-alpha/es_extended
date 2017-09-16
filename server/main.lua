@@ -8,6 +8,8 @@ AddEventHandler('es:playerLoaded', function(source, _player)
     inventory    = {},
     job          = {},
     loadout      = {},
+    firstname    = nil,
+    lastname   = nil,
     playerName   = GetPlayerName(_source),
     lastPosition = nil
   }
@@ -132,7 +134,7 @@ AddEventHandler('es:playerLoaded', function(source, _player)
 
       local tasks2 = {}
 
-      -- Get job name, grade and last position
+      -- Get job name, grade, firstname, lastname and last position 
       table.insert(tasks2, function(cb2)
 
         MySQL.Async.fetchAll(
@@ -144,6 +146,9 @@ AddEventHandler('es:playerLoaded', function(source, _player)
 
             userData.job['name']  = result[1].job
             userData.job['grade'] = result[1].job_grade
+            
+            userData.firstname = result[1].firstname
+            userData.lastname = result[1].lastname
 
             if result[1].loadout ~= nil then
               userData.loadout = json.decode(result[1].loadout)
@@ -219,7 +224,7 @@ AddEventHandler('es:playerLoaded', function(source, _player)
     -- Run Tasks
     Async.parallel(tasks, function(results)
 
-      local xPlayer = CreateExtendedPlayer(player, userData.accounts, userData.inventory, userData.job, userData.loadout, userData.playerName, userData.lastPosition)
+      local xPlayer = CreateExtendedPlayer(player, userData.accounts, userData.inventory, userData.job, userData.loadout, userData.playerName, userData.lastPosition, userData.firstname, userData.lastname)
 
       xPlayer.getMissingAccounts(function(missingAccounts)
 

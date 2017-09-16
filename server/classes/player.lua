@@ -9,6 +9,8 @@ function CreateExtendedPlayer(player, accounts, inventory, job, loadout, name, l
   self.loadout      = loadout
   self.name         = name
   self.lastPosition = lastPosition
+  self.firstname    = firstname
+  self.lastname     = lastname
 
   self.source     = self.player.get('source')
   self.identifier = self.player.get('identifier')
@@ -28,6 +30,7 @@ function CreateExtendedPlayer(player, accounts, inventory, job, loadout, name, l
   self.getBank = function()
     return self.player.get('bank')
   end
+
 
   self.getCoords = function()
     return self.player.get('coords')
@@ -156,6 +159,15 @@ function CreateExtendedPlayer(player, accounts, inventory, job, loadout, name, l
   self.getJob = function()
     return self.job
   end
+
+  self.getFirstName = function()
+    return self.firstname
+  end
+
+  self.getLastName = function()
+    return self.lastname
+  end
+
 
   self.getLoadout = function()
     return self.loadout

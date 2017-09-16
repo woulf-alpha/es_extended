@@ -61,7 +61,7 @@ AddEventHandler('es:playerLoaded', function(source, _player)
 
     end)
 
-    -- Get Inventory
+     -- Get Inventory
     table.insert(tasks, function(cb)
 
       MySQL.Async.fetchAll(
@@ -69,21 +69,21 @@ AddEventHandler('es:playerLoaded', function(source, _player)
         {
           ['@identifier'] = player.getIdentifier()
         },
-        function(inventory)
+        function(result)
+          
+            local user = result[1]
+ 
 
-          for i=1, #inventory, 1 do
-            table.insert(userData.inventory, {
-              name      = inventory[i].item,
-              count     = inventory[i].count,
-              label     = ESX.Items[inventory[i].item].label,
-              limit     = ESX.Items[inventory[i].item].limit,
-              usable    = ESX.UsableItemsCallbacks[inventory[i].item] ~= nil,
-              rare      = ESX.Items[inventory[i].item].rare,
-              canRemove = ESX.Items[inventory[i].item].canRemove,
-            })
-          end
+            if user.inventory ~= nil then
+             
+               for i, v in ipairs( json.decode(user.inventory) ) do
+                 table.insert(userData.inventory, v)
+               end
+         
+            end
 
-          for k,v in pairs(ESX.Items) do
+
+            for k,v in pairs(ESX.Items) do
 
             local found = false
 
@@ -106,18 +106,11 @@ AddEventHandler('es:playerLoaded', function(source, _player)
                 canRemove = ESX.Items[k].canRemove,
               })
 
-              MySQL.Async.execute(
-                'INSERT INTO user_inventory (identifier, item, count) VALUES (@identifier, @item, @count)',
-                {
-                  ['@identifier'] = player.getIdentifier(),
-                  ['@item']       = k,
-                  ['@count']      = 0
-                }
-              )
-
+              
             end
 
           end
+ 
 
           table.sort(userData.inventory, function(a,b)
             return a.label < b.label
@@ -563,6 +556,8 @@ ESX.RegisterServerCallback('esx:getPlayerData', function(source, cb)
     accounts     = xPlayer.getAccounts(),
     inventory    = xPlayer.getInventory(),
     job          = xPlayer.getJob(),
+    firstname    = xPlayer.getFirstName(),
+    lastname     = xPlayer.getLastName(),
     loadout      = xPlayer.getLoadout(),
     lastPosition = xPlayer.getLastPosition(),
     money        = xPlayer.get('money')
@@ -579,6 +574,8 @@ ESX.RegisterServerCallback('esx:getOtherPlayerData', function(source, cb, target
     accounts     = xPlayer.getAccounts(),
     inventory    = xPlayer.getInventory(),
     job          = xPlayer.getJob(),
+    firstname    = xPlayer.getFirstName(),
+    lastname     = xPlayer.getLastName(),
     loadout      = xPlayer.getLoadout(),
     lastPosition = xPlayer.getLastPosition(),
     money        = xPlayer.get('money')

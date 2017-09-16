@@ -6,7 +6,9 @@ ALTER TABLE `users`
   ADD COLUMN `job` varchar(255) NULL DEFAULT 'unemployed' AFTER `skin`,
   ADD COLUMN `job_grade` INT NULL DEFAULT 0 AFTER `job`,
   ADD COLUMN `loadout` LONGTEXT NULL AFTER `job_grade`,
-  ADD COLUMN `position` VARCHAR(255) NULL AFTER `loadout`
+  ADD COLUMN `position` VARCHAR(255) NULL AFTER `loadout`,
+  ADD COLUMN `firstname` VARCHAR(255) NULL AFTER `position`,
+  ADD COLUMN `lastname` VARCHAR(255) NULL AFTER `firstname`
 ;
 
 CREATE TABLE `items` (
@@ -62,8 +64,7 @@ CREATE TABLE `user_inventory` (
 
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `identifier` varchar(255) NOT NULL,
-  `item` varchar(255) NOT NULL,
-  `count` int(11) NOT NULL,
+  `inventory` LONGTEXT NULL,
 
   PRIMARY KEY (`id`)
 );

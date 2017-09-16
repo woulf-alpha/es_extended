@@ -84,32 +84,21 @@ ESX.SavePlayer = function(xPlayer, cb)
 
   end
 
-  -- Inventory items
-  for i=1, #xPlayer.inventory, 1 do
+  -- Inventory 
+  table.insert(asyncTasks, function(cb)
 
-    if ESX.LastPlayerData[xPlayer.source].items[xPlayer.inventory[i].name] ~= xPlayer.inventory[i].count then
+    MySQL.Async.execute(
+      'UPDATE user_inventory SET `inventory` = @inventory WHERE identifier = @identifier',
+      {
+        ['@inventory']    = json.encode(xPlayer.inventory),
+        ['@identifier'] = xPlayer.identifier
+      },
+      function(rowsChanged)
+        cb()
+      end
+    )
 
-      table.insert(asyncTasks, function(cb)
-
-        MySQL.Async.execute(
-          'UPDATE user_inventory SET `count` = @count WHERE identifier = @identifier AND item = @item',
-          {
-            ['@count']      = xPlayer.inventory[i].count,
-            ['@identifier'] = xPlayer.identifier,
-            ['@item']       = xPlayer.inventory[i].name
-          },
-          function(rowsChanged)
-            cb()
-          end
-        )
-
-      end)
-
-      ESX.LastPlayerData[xPlayer.source].items[xPlayer.inventory[i].name] = xPlayer.inventory[i].count
-
-    end
-
-  end
+  end)
 
   -- Job, loadout and position
   table.insert(asyncTasks, function(cb)
